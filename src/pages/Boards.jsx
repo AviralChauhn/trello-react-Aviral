@@ -35,7 +35,7 @@ const Boards = () => {
           display: "flex",
           flexWrap: "wrap",
           marginTop: "10vh",
-          width: "100vw",
+          // width: "100vw",
           marginLeft: "8vw",
         }}
       >
@@ -59,7 +59,7 @@ const Boards = () => {
                         minWidth: 200,
                         height: "10vh",
                         backgroundImage: `url(${item.prefs.backgroundImage})`,
-                        backgroundColor: `url(${item.prefs.backgroundColor})`,
+                        backgroundColor: `${item.prefs.backgroundColor}`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         justifyContent: "space-around",
