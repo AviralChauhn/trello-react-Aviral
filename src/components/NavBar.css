@@ -1,0 +1,17 @@
+.heading {
+  background-image: url(https://trello.com/assets/d947df93bc055849898e.gif);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  display: flex;
+  width: 100px;
+  height: 50px;
+  margin-left: 20px;
+  opacity: 1;
+  filter: brightness(0) saturate(100%) invert(30%) sepia(53%) saturate(323%)
+    hue-rotate(179deg) brightness(91%) contrast(88%);
+}
+
+.heading:hover {
+  background-image: url(https://trello.com/assets/87e1af770a49ce8e84e3.gif);
+}
