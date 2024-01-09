@@ -1,9 +1,12 @@
-import React from "react";
-import { Button } from "@mui/material";
+import React, { useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import { Box } from "@mui/material";
+import axios from "axios";
+const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
+const APIToken =
+  "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
 const style = {
   position: "absolute",
   top: "50%",
@@ -15,14 +18,42 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const CheckLists = () => {
+const CheckLists = (props) => {
+  const { id } = props;
+  const [checkListsData, setCheckListsData] = useState([]);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
+    fetchChecklist();
+  };
   const handleClose = () => setOpen(false);
-
+  // console.log(id);
+  const fetchChecklist = () => {
+    axios
+      .get(
+        `https://api.trello.com/1/cards/${id}/checklists?key=${APIKey}&token=${APIToken}`
+      )
+      .then((response) => {
+        setCheckListsData(response.data);
+      })
+      .catch((err) => console.log(err));
+  };
+  // console.log(checkListsData);
   return (
-    <div>
-      <Button onClick={handleOpen}>Open Modal</Button>
+    <div style={{ paddingBottom: "6vh" }}>
+      <button
+        onClick={handleOpen}
+        style={{
+          backgroundColor: "transparent",
+          border: "none",
+          width: "14vw",
+          position: "absolute",
+          left: "0",
+          marginLeft: "1vw",
+          height: "6vh",
+          cursor: "pointer",
+        }}
+      ></button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -30,12 +61,18 @@ const CheckLists = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+          {checkListsData.map((item) => {
+            return (
+              <Typography
+                id="modal-modal-title"
+                variant="h6"
+                component="h2"
+                key={item.id}
+              >
+                {item.name}
+              </Typography>
+            );
+          })}
         </Box>
       </Modal>
     </div>

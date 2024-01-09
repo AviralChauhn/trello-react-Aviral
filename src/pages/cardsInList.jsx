@@ -20,6 +20,7 @@ const cardsInList = (props) => {
       )
       .then((response) => {
         console.log(`Response: ${response.status} ${response.statusText}`);
+        // console.log(response);
         return response;
       })
       .then((text) => setCardData([...text.data]))
@@ -49,6 +50,7 @@ const cardsInList = (props) => {
               }}
             >
               <p style={{ marginLeft: "2vw" }}>{item.name}</p>
+              <CheckLists id={item.id} />
               <div>
                 <DeleteCard id={item.id} setCardData={setCardData} />
               </div>
