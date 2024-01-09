@@ -21,8 +21,7 @@ const NavBar = () => {
       }}
     >
       <div className="heading">
-        <div style={{ display: "flex", marginLeft: "7vw" }}>
-          <AppsIcon style={{ marginTop: "1.5vh" }} />
+        <div style={{ display: "flex", marginLeft: "7rem" }}>
           <Link to="/">
             <HomeIcon style={{ marginTop: "1.5vh" }} />
           </Link>

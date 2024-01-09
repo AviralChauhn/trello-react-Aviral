@@ -19,15 +19,7 @@ const Boards = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  const bull = (
-    <Box
-      component="span"
-      sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
-    >
-      •
-    </Box>
-  );
-  // console.log(data);
+
   function boardMap() {
     return (
       <Box
@@ -35,7 +27,6 @@ const Boards = () => {
           display: "flex",
           flexWrap: "wrap",
           marginTop: "10vh",
-          // width: "100vw",
           marginLeft: "8vw",
         }}
       >
@@ -89,38 +80,6 @@ const Boards = () => {
               </>
             );
           })}
-          {/* <div style={{ marginLeft: "2.5vw" }}>
-            <Card
-              sx={{
-                minWidth: 200,
-                height: "10vh",
-                backgroundColor: `white`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                margin: "5vh",
-              }}
-            >
-              <CardContent
-                sx={{
-                  display: "flex",
-                  backgroundColor: "rgba(0,0,0,0.1)",
-                  height: "12vh",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: 20,
-                    fontWeight: "bold",
-                  }}
-                  color="white"
-                  gutterBottom
-                >
-                  <CardModal />
-                </Typography>
-              </CardContent>
-            </Card>
-          </div> */}
         </div>
       </Box>
     );

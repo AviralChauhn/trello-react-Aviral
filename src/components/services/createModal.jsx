@@ -45,22 +45,6 @@ const CreateModal = ({ fetchdata }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              backgroundImage: `url(${modalBack})`,
-              backgroundSize: "cover",
-            }}
-          >
-            <img
-              src={modalimg}
-              alt=""
-              style={{
-                height: "18vh",
-              }}
-            />
-          </div>
           <Typography
             id="modal-modal-title"
             variant="h6"
@@ -89,7 +73,7 @@ const CreateModal = ({ fetchdata }) => {
                 backgroundColor: "blue",
                 color: "white",
                 height: "4vh",
-                width: "10vw",
+                width: "18vw",
                 border: "none",
                 boxShadow: "2px 2px 5px rgba(5, 5, 5, 0.413)",
               }}
