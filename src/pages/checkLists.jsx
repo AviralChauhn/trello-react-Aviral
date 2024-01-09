@@ -40,7 +40,7 @@ const CheckLists = (props) => {
   };
   // console.log(checkListsData);
   return (
-    <div style={{ paddingBottom: "6vh" }}>
+    <div style={{ paddingBottom: "4vh" }}>
       <button
         onClick={handleOpen}
         style={{
@@ -50,7 +50,7 @@ const CheckLists = (props) => {
           position: "absolute",
           left: "0",
           marginLeft: "1vw",
-          height: "6vh",
+          height: "4vh",
           cursor: "pointer",
         }}
       ></button>
