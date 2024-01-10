@@ -52,30 +52,29 @@ const CreateModal = ({ fetchdata }) => {
             component="h2"
             style={{
               display: "flex",
-              flexDirection: "column",
               alignItems: "center",
             }}
           >
             <TextField
-              label="Write Your Board Name....."
+              label="Write Board Name....."
               value={name}
               type="text"
               onChange={(e) => handleChange(e)}
-              style={{ width: "100%", borderRadius: "10px" }}
+              style={{ width: "80%", borderRadius: "10px" }}
             />
             {/* <Link to={`/board/${id}`} style={{ textDecoration: "none" }}> */}
             <button
               onClick={handleSubmit}
               style={{
-                display: "flex",
-                justifyContent: "center",
+                // display: "flex",
+                // justifyContent: "center",
                 borderRadius: "5px",
-                marginTop: "1vh",
-                alignItems: "center",
+                // alignItems: "center",
+                marginLeft: "1vw",
                 backgroundColor: "blue",
                 color: "white",
-                height: "4vh",
-                width: "18vw",
+                height: "6vh",
+                width: "8vw",
                 border: "none",
                 boxShadow: "2px 2px 5px rgba(5, 5, 5, 0.413)",
               }}

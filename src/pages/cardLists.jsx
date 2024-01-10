@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ListSubheader from "@mui/material/ListSubheader";
-
+import { Watch } from "react-loader-spinner";
 import List from "@mui/material/List";
 import { useParams } from "react-router-dom";
 import CreateList from "../components/services/createList";
@@ -49,47 +49,68 @@ const CardLists = () => {
           alignItems: "start",
         }}
       >
-        {listData.map((item) => {
-          return (
-            <div
-              key={item.id}
-              style={{
-                marginInline: "1.5vw",
-                width: "20vw",
-                boxShadow: "2px 2px 5px rgba(5, 5, 5, 0.2)",
-              }}
-            >
-              <List
-                sx={{
-                  width: "100%",
-                  maxWidth: 360,
-                  bgcolor: "background.paper",
+        {listData.length ? (
+          listData.map((item) => {
+            return (
+              <div
+                key={item.id}
+                style={{
+                  marginInline: "1.5vw",
+                  width: "20vw",
+                  boxShadow: "2px 2px 5px rgba(5, 5, 5, 0.2)",
                 }}
-                component="nav"
-                aria-labelledby="nested-list-subheader"
-                subheader={
-                  <ListSubheader
-                    component="div"
-                    id="nested-list-subheader"
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <h3> {item.name} </h3>
-                    <DeleteFeature
-                      type="list"
-                      id={item.id}
-                      onDelete={handleDelete}
-                    />
-                  </ListSubheader>
-                }
               >
-                <CardsInList id={item.id} />
-              </List>
-            </div>
-          );
-        })}
+                <List
+                  sx={{
+                    width: "100%",
+                    maxWidth: 360,
+                    bgcolor: "background.paper",
+                  }}
+                  component="nav"
+                  aria-labelledby="nested-list-subheader"
+                  subheader={
+                    <ListSubheader
+                      component="div"
+                      id="nested-list-subheader"
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <h3> {item.name} </h3>
+                      <DeleteFeature
+                        type="list"
+                        id={item.id}
+                        onDelete={handleDelete}
+                      />
+                    </ListSubheader>
+                  }
+                >
+                  <CardsInList id={item.id} />
+                </List>
+              </div>
+            );
+          })
+        ) : (
+          <div
+            style={{
+              width: "100vw",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Watch
+              visible={true}
+              height="80"
+              width="80"
+              radius="48"
+              color="#0000FF"
+              ariaLabel="watch-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+            />
+          </div>
+        )}
       </div>
       <CreateList setListData={setListData} />
     </div>
