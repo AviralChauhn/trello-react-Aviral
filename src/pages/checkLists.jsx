@@ -4,6 +4,12 @@ import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import { Box } from "@mui/material";
 import axios from "axios";
+import CreateCheckList from "../components/services/createCheckList";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Checkitems from "./checkitems";
+import DeleteFeature from "../components/services/DeleteFeature";
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
   "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
@@ -27,7 +33,6 @@ const CheckLists = (props) => {
     fetchChecklist();
   };
   const handleClose = () => setOpen(false);
-  // console.log(id);
   const fetchChecklist = () => {
     axios
       .get(
@@ -38,7 +43,14 @@ const CheckLists = (props) => {
       })
       .catch((err) => console.log(err));
   };
-  // console.log(checkListsData);
+  function handleChecklistCreated(newData) {
+    setCheckListsData((prevData) => [...prevData, newData]);
+  }
+  function handleDelete(deletedid) {
+    setCheckListsData((prevList) =>
+      prevList.filter((item) => item.id !== deletedid)
+    );
+  }
   return (
     <div style={{ paddingBottom: "4vh" }}>
       <button
@@ -59,20 +71,59 @@ const CheckLists = (props) => {
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+        sx={{ overflowY: "auto" }}
       >
         <Box sx={style}>
           {checkListsData.map((item) => {
             return (
-              <Typography
-                id="modal-modal-title"
-                variant="h6"
-                component="h2"
+              <Accordion
+                sx={{
+                  maxHeight: "50vh",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                }}
                 key={item.id}
               >
-                {item.name}
-              </Typography>
+                <AccordionSummary
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginRight: "6rem",
+                    }}
+                  >
+                    {item.name}
+                  </Typography>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "right",
+                      width: "100%",
+                      position: "absolute",
+                    }}
+                  >
+                    <DeleteFeature
+                      type="checklist"
+                      id={item.id}
+                      onDelete={handleDelete}
+                    />
+                  </div>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography>
+                    <Checkitems id={item.id} cardId={id} />
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
             );
           })}
+          <CreateCheckList
+            id={id}
+            handleChecklistCreated={handleChecklistCreated}
+          />
         </Box>
       </Modal>
     </div>

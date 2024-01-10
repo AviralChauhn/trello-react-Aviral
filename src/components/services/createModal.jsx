@@ -7,6 +7,7 @@ import Modal from "@mui/material/Modal";
 import modalimg from "../imgs/ModalStart.svg";
 import modalBack from "../imgs/modalBack.jpeg";
 import { Link, useParams } from "react-router-dom";
+import { TextField } from "@mui/material";
 const CreateModal = ({ fetchdata }) => {
   const [name, setName] = useState("");
   const [open, setOpen] = useState(false);
@@ -55,11 +56,12 @@ const CreateModal = ({ fetchdata }) => {
               alignItems: "center",
             }}
           >
-            <input
-              placeholder="Write Your Board Name....."
+            <TextField
+              label="Write Your Board Name....."
+              value={name}
               type="text"
               onChange={(e) => handleChange(e)}
-              style={{ height: "5vh", width: "100%", borderRadius: "10px" }}
+              style={{ width: "100%", borderRadius: "10px" }}
             />
             {/* <Link to={`/board/${id}`} style={{ textDecoration: "none" }}> */}
             <button

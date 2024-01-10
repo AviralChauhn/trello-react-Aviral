@@ -5,8 +5,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import ClearIcon from "@mui/icons-material/Clear";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
@@ -24,7 +23,7 @@ const CreateCard = (props) => {
       )
       .then((response) => {
         console.log(response);
-        onCardCreate();
+        onCardCreate(response.data);
       });
     setCardName("");
   }
@@ -36,7 +35,15 @@ const CreateCard = (props) => {
         marginLeft: "1vw",
       }}
     >
-      <Accordion>
+      <Accordion
+        sx={{
+          width: "100%",
+          boxShadow:
+            "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+          margin: "12px",
+          // border: "2px solid black",
+        }}
+      >
         <AccordionSummary
           expandIcon={<AddIcon />}
           aria-controls="panel1a-content"
@@ -56,10 +63,11 @@ const CreateCard = (props) => {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <input
+            <TextField
               type="text"
-              placeholder="Insert your card name"
-              style={{ width: "18vw", height: "4vh" }}
+              value={cardName}
+              label="Insert your card name"
+              style={{ width: "100%" }}
               onChange={(e) => handleCardChange(e)}
             />
             <Button

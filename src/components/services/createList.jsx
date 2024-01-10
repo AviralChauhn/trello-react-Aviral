@@ -6,7 +6,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
@@ -57,10 +57,12 @@ const CreateList = (props) => {
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            <input
+            <TextField
               type="text"
+              value={name}
+              label="Enter List Name....."
               onChange={(e) => handleInput(e)}
-              style={{ height: "3vh", width: "15vw" }}
+              style={{ width: "15vw" }}
             />
             <Button
               variant="contained"

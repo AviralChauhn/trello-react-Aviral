@@ -6,8 +6,7 @@ import List from "@mui/material/List";
 import { useParams } from "react-router-dom";
 import CreateList from "../components/services/createList";
 import CardsInList from "./cardsInList";
-import CreateCard from "../components/services/createCard";
-import DeleteList from "../components/services/deleteList";
+import DeleteFeature from "../components/services/DeleteFeature";
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
   "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
@@ -53,6 +52,7 @@ const CardLists = () => {
         {listData.map((item) => {
           return (
             <div
+              key={item.id}
               style={{
                 marginInline: "1.5vw",
                 width: "20vw",
@@ -77,13 +77,16 @@ const CardLists = () => {
                     }}
                   >
                     <h3> {item.name} </h3>
-                    <DeleteList id={item.id} onDelete={handleDelete} />
+                    <DeleteFeature
+                      type="list"
+                      id={item.id}
+                      onDelete={handleDelete}
+                    />
                   </ListSubheader>
                 }
               >
                 <CardsInList id={item.id} />
               </List>
-              {/* <CreateCard id={item.id} /> */}
             </div>
           );
         })}

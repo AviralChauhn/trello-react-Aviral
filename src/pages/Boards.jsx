@@ -27,14 +27,15 @@ const Boards = () => {
           display: "flex",
           flexWrap: "wrap",
           marginTop: "10vh",
-          marginLeft: "8vw",
+          // marginLeft: "8vw",
         }}
       >
         <div
           style={{
             display: "flex",
             flexWrap: "wrap",
-            marginTop: "20vh",
+            marginTop: "10vh",
+            justifyContent: "center",
           }}
         >
           {data.map((item) => {

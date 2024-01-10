@@ -1,9 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import CreateCard from "../components/services/createCard";
-import { Button } from "@mui/material";
-import DeleteCard from "../components/services/deleteCard";
 import CheckLists from "./checkLists";
+import DeleteFeature from "../components/services/DeleteFeature";
 
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
@@ -29,15 +28,19 @@ const cardsInList = (props) => {
   useEffect(() => {
     fetchCards();
   }, []);
-  const handleCardCreated = () => {
-    fetchCards();
+  function handleDelete(deletedid) {
+    setCardData((prevList) => prevList.filter((item) => item.id !== deletedid));
+  }
+  const handleCardCreated = (newCardData) => {
+    setCardData((prevCardData) => [...prevCardData, newCardData]);
   };
   return (
     <div>
-      <div>
+      <div style={{ maxHeight: "55vh", overflowY: "auto" }}>
         {cardData.map((item) => {
           return (
             <div
+              key={item.id}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -53,13 +56,17 @@ const cardsInList = (props) => {
               <p style={{ marginLeft: "2vw" }}>{item.name}</p>
               <CheckLists id={item.id} />
               <div>
-                <DeleteCard id={item.id} setCardData={setCardData} />
+                <DeleteFeature
+                  type="card"
+                  id={item.id}
+                  onDelete={handleDelete}
+                />
               </div>
             </div>
           );
         })}
+        <CreateCard id={id} onCardCreate={handleCardCreated} />
       </div>
-      <CreateCard id={id} onCardCreate={handleCardCreated} />
     </div>
   );
 };
