@@ -11,6 +11,7 @@ const NavBar = () => {
       sx={{
         display: "flex",
         justifyContent: "space-between",
+        backgroundColor: "white",
         padding: "2vh",
         margin: "0",
         width: "100vw",

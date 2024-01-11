@@ -43,11 +43,9 @@ const Boards = () => {
             data.map((item) => {
               return (
                 <>
-                  <div
-                    key={item.id}
-                    style={{ marginInline: "5vw", marginTop: "5vh" }}
-                  >
+                  <div style={{ marginInline: "5vw", marginTop: "5vh" }}>
                     <Link
+                      key={item.id}
                       to={`/board/${item.id}`}
                       style={{ textDecoration: "none" }}
                     >

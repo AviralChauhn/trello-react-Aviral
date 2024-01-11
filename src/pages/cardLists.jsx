@@ -13,12 +13,14 @@ import { useBoardContext } from "../components/services/BoardProvider";
 const CardLists = () => {
   const { id } = useParams();
   const [listData, setListData] = useState([]);
+  const [isData, setIsData] = useState(true);
   const navigate = useNavigate();
   const { backgroundImageObject, backgroundColorObject } = useBoardContext();
   const fetchData = async () => {
     try {
       const lists = await getListOnBoard(id);
       setListData(lists);
+      setIsData(false);
     } catch (error) {
       console.error("Error fetching data:", error);
       navigate(`/error`);
@@ -56,7 +58,7 @@ const CardLists = () => {
           marginTop: "5vh",
         }}
       >
-        {listData.length ? (
+        {!isData ? (
           listData.map((item) => {
             return (
               <div
@@ -64,6 +66,7 @@ const CardLists = () => {
                 style={{
                   marginInline: "1.5vw",
                   width: "20vw",
+                  minWidth: 280,
                 }}
               >
                 <List

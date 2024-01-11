@@ -42,30 +42,32 @@ const Checkitems = (props) => {
     <div>
       {checkItemsData.map((item) => {
         return (
-          <p
-            key={item.id}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              backgroundColor: "#f5f5f5",
-              marginBlock: "1vh",
-            }}
-          >
-            <Checkbox
-              defaultChecked={item.state === "complete" ? true : false}
-              onChange={() => {
-                updateCheckitem(item.id, cardId, item.state);
+          <>
+            <p
+              key={item.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                backgroundColor: "#f5f5f5",
+                marginBlock: "1vh",
               }}
-            />
-            {item.name}
-            <DeleteFeature
-              type="checkItem"
-              id={id}
-              checkId={item.id}
-              onDelete={handleDelete}
-            />
-          </p>
+            >
+              <Checkbox
+                defaultChecked={item.state === "complete" ? true : false}
+                onChange={() => {
+                  updateCheckitem(item.id, cardId, item.state);
+                }}
+              />
+              {item.name}
+              <DeleteFeature
+                type="checkItem"
+                id={id}
+                checkId={item.id}
+                onDelete={handleDelete}
+              />
+            </p>
+          </>
         );
       })}
       <div>
@@ -73,7 +75,7 @@ const Checkitems = (props) => {
           <CreateCheckItem id={id} isCheckItemCreated={isCheckItemCreated} />
         )}
       </div>
-      <div>
+      <>
         <Button variant="outlined" color="success" onClick={handleCreateClick}>
           Create A CheckItem
         </Button>
@@ -84,7 +86,7 @@ const Checkitems = (props) => {
             setIsCreateClicked(false);
           }}
         ></Button>
-      </div>
+      </>
     </div>
   );
 };
