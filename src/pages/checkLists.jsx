@@ -57,6 +57,7 @@ const CheckLists = (props) => {
         style={{
           backgroundColor: "transparent",
           border: "none",
+          minWidth: 200,
           width: "14vw",
           position: "absolute",
           left: "0",

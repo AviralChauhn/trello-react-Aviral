@@ -41,7 +41,6 @@ const CreateCheckList = (props) => {
               value={checkListName}
               label="Enter list Name..."
               type="text"
-              style={{ width: "10.5vw" }}
               onChange={(e) => {
                 setChecKListName(e.target.value);
               }}
