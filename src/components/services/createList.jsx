@@ -62,7 +62,6 @@ const CreateList = (props) => {
               value={name}
               label="Enter List Name....."
               onChange={(e) => handleInput(e)}
-              style={{ width: "15vw" }}
             />
             <Button
               variant="contained"

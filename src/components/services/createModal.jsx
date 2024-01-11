@@ -60,7 +60,7 @@ const CreateModal = ({ fetchdata }) => {
               value={name}
               type="text"
               onChange={(e) => handleChange(e)}
-              style={{ width: "80%", borderRadius: "10px" }}
+              style={{ borderRadius: "10px" }}
             />
             {/* <Link to={`/board/${id}`} style={{ textDecoration: "none" }}> */}
             <button
