@@ -34,7 +34,7 @@ const CreateList = (props) => {
   }
   return (
     <div>
-      <Accordion style={{ marginRight: "5vw" }}>
+      <Accordion style={{ marginRight: "5vw", marginTop: "5vh" }}>
         <AccordionSummary
           expandIcon={<AddIcon />}
           aria-controls="panel1a-content"

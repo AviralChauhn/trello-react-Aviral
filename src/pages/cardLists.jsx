@@ -8,10 +8,13 @@ import CardsInList from "./cardsInList";
 import { useNavigate } from "react-router-dom";
 import DeleteFeature from "../components/services/DeleteFeature";
 import { getListOnBoard } from "../axiosAPI";
+// import { useBoardContext } from "../components/services/BoardProvider";
+import { useBoardContext } from "../components/services/BoardProvider";
 const CardLists = () => {
   const { id } = useParams();
   const [listData, setListData] = useState([]);
   const navigate = useNavigate();
+  const { backgroundImageObject, backgroundColorObject } = useBoardContext();
   const fetchData = async () => {
     try {
       const lists = await getListOnBoard(id);
@@ -34,13 +37,23 @@ const CardLists = () => {
       style={{
         display: "flex",
         width: "",
-        marginTop: "15vh",
+        marginTop: "10vh",
+        backgroundImage: `url(${backgroundImageObject[id]})`,
+        backgroundColor: backgroundColorObject[id]
+          ? backgroundColorObject[id]
+          : "#0079BF",
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        height: "90vh",
+        overflowX: "auto",
       }}
     >
+      <div></div>
       <div
         style={{
           display: "flex",
           alignItems: "start",
+          marginTop: "5vh",
         }}
       >
         {listData.length ? (
@@ -51,7 +64,6 @@ const CardLists = () => {
                 style={{
                   marginInline: "1.5vw",
                   width: "20vw",
-                  boxShadow: "2px 2px 5px rgba(5, 5, 5, 0.2)",
                 }}
               >
                 <List
@@ -59,6 +71,7 @@ const CardLists = () => {
                     width: "100%",
                     maxWidth: 360,
                     bgcolor: "background.paper",
+                    borderRadius: "10px",
                   }}
                   component="nav"
                   aria-labelledby="nested-list-subheader"
@@ -69,6 +82,7 @@ const CardLists = () => {
                       sx={{
                         display: "flex",
                         justifyContent: "space-between",
+                        borderRadius: "10px",
                       }}
                     >
                       <h3> {item.name} </h3>
