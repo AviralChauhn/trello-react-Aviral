@@ -7,6 +7,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
+import { createNewCard } from "../../axiosAPI";
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
   "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
@@ -16,16 +17,14 @@ const CreateCard = (props) => {
   function handleCardChange(e) {
     setCardName(e.target.value);
   }
-  function handleCardClick() {
-    axios
-      .post(
-        `https://api.trello.com/1/cards?idList=${id}&name=${cardName}&key=${APIKey}&token=${APIToken}`
-      )
-      .then((response) => {
-        console.log(response);
-        onCardCreate(response.data);
-      });
-    setCardName("");
+  async function handleCardClick() {
+    try {
+      const newCard = await createNewCard(id, cardName);
+      onCardCreate(newCard);
+      setCardName("");
+    } catch (error) {
+      console.log("Error creating card:", error);
+    }
   }
   return (
     <div

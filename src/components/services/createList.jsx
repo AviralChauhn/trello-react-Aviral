@@ -7,6 +7,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import { Button, TextField } from "@mui/material";
+import { createNewList } from "../../axiosAPI";
 
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
@@ -15,17 +16,14 @@ const CreateList = (props) => {
   const { setListData } = props;
   const { id } = useParams();
   const [name, setName] = useState("");
-  function fetchData(name) {
-    axios
-      .post(
-        `https://api.trello.com/1/lists?name=${name}&idBoard=${id}&key=${APIKey}&token=${APIToken}`
-      )
-      .then((response) => {
-        console.log(`Response: ${response.status} ${response.statusText}`);
-        return response;
-      })
-      .then((text) => setListData((prev) => [...prev, text.data]))
-      .catch((err) => console.error(err));
+  async function fetchData(name) {
+    try {
+      const listData = await createNewList(id, name);
+      setListData((prev) => [...prev, listData]);
+      return listData;
+    } catch (error) {
+      console.log("Error Creating List", error);
+    }
   }
   function handleInput(e) {
     setName(e.target.value);

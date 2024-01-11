@@ -8,20 +8,19 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { APIKey, APIToken } from "./config";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
+import { createNewCheckList } from "../../axiosAPI";
 
 const CreateCheckList = (props) => {
   const { id, handleChecklistCreated } = props;
   const [checkListName, setChecKListName] = useState("");
-  const createCheckList = (name) => {
-    axios
-      .post(
-        `https://api.trello.com/1/checklists?idCard=${id}&name=${name}&key=${APIKey}&token=${APIToken}`
-      )
-      .then((response) => {
-        console.log(response);
-        handleChecklistCreated(response.data);
-      })
-      .catch((err) => console.log(err));
+  const createCheckList = async (name) => {
+    try {
+      const newCheckList = await createNewCheckList(id, name);
+      handleChecklistCreated(newCheckList);
+      setChecKListName("");
+    } catch (error) {
+      console.log("Error creating checklist:", error);
+    }
   };
   function handleCreateClick() {
     createCheckList(checkListName);

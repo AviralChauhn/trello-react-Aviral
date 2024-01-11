@@ -1,22 +1,21 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
-import { APIKey, APIToken } from "../components/services/config";
 import { Button } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CreateCheckItem from "../components/services/createCheckItem";
 import DeleteFeature from "../components/services/DeleteFeature";
+import { getCheckItemInChecklist, updateCheckItemState } from "../axiosAPI";
 const Checkitems = (props) => {
   const { id, cardId } = props;
   const [checkItemsData, setCheckItemsData] = useState([]);
   const [isCreateClicked, setIsCreateClicked] = useState(false);
-  const fetchCheckItem = () => {
-    axios
-      .get(
-        `https://api.trello.com/1/checklists/${id}/checkItems?key=${APIKey}&token=${APIToken}`
-      )
-      .then((response) => setCheckItemsData(response.data))
-      .catch((err) => console.log(err));
+  const fetchCheckItem = async () => {
+    try {
+      const checkitems = await getCheckItemInChecklist(id);
+      setCheckItemsData(checkitems);
+    } catch (error) {
+      console.log("Error fetching Data");
+    }
   };
   useEffect(() => {
     fetchCheckItem();
@@ -34,25 +33,9 @@ const Checkitems = (props) => {
   }
   const updateCheckitem = async (id, cardId, state) => {
     try {
-      const newState = state === "complete" ? "incomplete" : "complete";
-
-      const response = await axios.put(
-        `https://api.trello.com/1/cards/${cardId}/checkItem/${id}?state=${newState}&key=${APIKey}&token=${APIToken}`
-      );
-
-      // Use response.data to get the updated state from the API response
-      console.log(response.data);
-
-      // Update the local state with the new state
-      setCheckItemsData((prevList) =>
-        prevList.map((item) =>
-          item.id === id ? { ...item, state: newState } : item
-        )
-      );
-
-      return response;
+      await updateCheckItemState(cardId, id, state, setCheckItemsData);
     } catch (error) {
-      console.error("Error updating checklist state:", error);
+      console.log("Error updating checkitem:", error);
     }
   };
   return (

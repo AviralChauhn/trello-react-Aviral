@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ListSubheader from "@mui/material/ListSubheader";
 import { Watch } from "react-loader-spinner";
@@ -6,35 +5,30 @@ import List from "@mui/material/List";
 import { useParams } from "react-router-dom";
 import CreateList from "../components/services/createList";
 import CardsInList from "./cardsInList";
+import { useNavigate } from "react-router-dom";
 import DeleteFeature from "../components/services/DeleteFeature";
-const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
-const APIToken =
-  "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
+import { getListOnBoard } from "../axiosAPI";
 const CardLists = () => {
   const { id } = useParams();
   const [listData, setListData] = useState([]);
-
-  function fetchData() {
-    axios
-      .get(
-        `https://api.trello.com/1/boards/${id}/lists?key=${APIKey}&token=${APIToken}`
-      )
-      .then((response) => {
-        console.log(`Response: ${response.status} ${response.statusText}`);
-        console.log(response);
-        return response;
-      })
-      .then((text) => setListData([...text.data]))
-      .catch((err) => console.error(err));
-  }
+  const navigate = useNavigate();
+  const fetchData = async () => {
+    try {
+      const lists = await getListOnBoard(id);
+      setListData(lists);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      navigate(`/error`);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   function handleDelete(deletedId) {
     setListData((prevList) => prevList.filter((item) => item.id !== deletedId));
   }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
   return (
     <div
       style={{
