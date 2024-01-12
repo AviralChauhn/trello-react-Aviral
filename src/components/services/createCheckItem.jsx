@@ -1,13 +1,34 @@
 import { Button, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import axios from "axios";
 import { APIKey, APIToken } from "./config";
 import { createNewCard, createNewCheckItem } from "../../axiosAPI";
+const startState = {
+  checkItemName: "",
+};
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "setName": {
+      return {
+        ...state,
+        checkItemName: action.payload,
+      };
+    }
+    case "resetName": {
+      return {
+        ...state,
+        checkItemName: "",
+      };
+    }
+  }
+};
 const CreateCheckItem = (props) => {
   const { id, isCheckItemCreated } = props;
-  const [checkItemName, setCheckItemName] = useState("");
+  // const [checkItemName, setCheckItemName] = useState("");
+  const [state, dispatch] = useReducer(reducer, startState);
   function handleName(e) {
-    setCheckItemName(e.target.value);
+    // setCheckItemName(e.target.value);
+    dispatch({ type: "setName", payload: e.target.value });
   }
   const createCheckItem = async () => {
     // axios
@@ -21,9 +42,11 @@ const CreateCheckItem = (props) => {
     //   })
     //   .catch((err) => console.log(err));
     try {
-      const newCheckItem = await createNewCheckItem(id, checkItemName);
-      isCheckItemCreated(newCheckItem);
-      setCheckItemName("");
+      const newCheckItem = await createNewCheckItem(id, state.checkItemName);
+      // isCheckItemCreated(newCheckItem);
+      // setCheckItemName("");
+      isCheckItemCreated({ type: "createNewCheckItem", payload: newCheckItem });
+      dispatch({ type: "resetName" });
     } catch (error) {
       console.log("Error creating checkitem:", error);
     }
@@ -31,7 +54,7 @@ const CreateCheckItem = (props) => {
   return (
     <div style={{ padding: "2vh", position: "relative", display: "flex" }}>
       <TextField
-        value={checkItemName}
+        value={state.checkItemName}
         label="Enter item name...."
         onChange={(e) => handleName(e)}
       />

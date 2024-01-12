@@ -147,32 +147,19 @@ const deleteItem = async (type, id, checkId, onDelete) => {
     throw error;
   }
 };
-const updateCheckItemState = async (
-  cardId,
-  checkItemId,
-  currentState,
-  setCheckItemsData
-) => {
+const updateCheckItemState = async (cardId, checkItemId, currentState) => {
   try {
     const newState = currentState === "complete" ? "incomplete" : "complete";
-
     const response = await axios.put(
       `cards/${cardId}/checkItem/${checkItemId}`,
       {
         state: newState,
       }
     );
-
-    setCheckItemsData((prevList) =>
-      prevList.map((item) =>
-        item.id === checkItemId ? { ...item, state: newState } : item
-      )
-    );
-
-    return response;
+    return newState;
   } catch (error) {
     console.error("Error updating check item state:", error);
-    throw error;
+    // throw error;
   }
 };
 export {

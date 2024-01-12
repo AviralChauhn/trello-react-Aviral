@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import ListSubheader from "@mui/material/ListSubheader";
 import { Watch } from "react-loader-spinner";
 import List from "@mui/material/List";
@@ -12,15 +12,43 @@ import { getListOnBoard } from "../axiosAPI";
 import { useBoardContext } from "../components/services/BoardProvider";
 const CardLists = () => {
   const { id } = useParams();
-  const [listData, setListData] = useState([]);
-  const [isData, setIsData] = useState(true);
+  const startState = {
+    listData: [],
+    isData: true,
+  };
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "fetchListData": {
+        return {
+          ...state,
+          listData: action.payload,
+        };
+      }
+      case "setData": {
+        return {
+          ...state,
+          isData: false,
+        };
+      }
+      case "createNewList": {
+        return {
+          ...state,
+          listData: [...state.listData, action.payload],
+        };
+      }
+    }
+  };
+  // const [listData, setListData] = useState([]);
+  // const [isData, setIsData] = useState(true);
+  const [state, dispatch] = useReducer(reducer, startState);
   const navigate = useNavigate();
   const { backgroundImageObject, backgroundColorObject } = useBoardContext();
   const fetchData = async () => {
     try {
       const lists = await getListOnBoard(id);
-      setListData(lists);
-      setIsData(false);
+      dispatch({ type: "fetchListData", payload: lists });
+      dispatch({ type: "setData" });
+      // setIsData(false);
     } catch (error) {
       console.error("Error fetching data:", error);
       navigate(`/error`);
@@ -31,7 +59,10 @@ const CardLists = () => {
   }, []);
 
   function handleDelete(deletedId) {
-    setListData((prevList) => prevList.filter((item) => item.id !== deletedId));
+    dispatch({
+      type: "fetchListData",
+      payload: state.listData.filter((item) => item.id !== deletedId),
+    });
   }
 
   return (
@@ -58,8 +89,8 @@ const CardLists = () => {
           marginTop: "5vh",
         }}
       >
-        {!isData ? (
-          listData.map((item) => {
+        {!state.isData ? (
+          state.listData.map((item) => {
             return (
               <div
                 key={item.id}
@@ -123,7 +154,7 @@ const CardLists = () => {
           </div>
         )}
       </div>
-      <CreateList setListData={setListData} />
+      <CreateList setListData={dispatch} />
     </div>
   );
 };

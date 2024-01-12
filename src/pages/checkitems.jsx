@@ -1,18 +1,55 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
-import { Button } from "@mui/material";
+import { Button, fabClasses } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import CreateCheckItem from "../components/services/createCheckItem";
 import DeleteFeature from "../components/services/DeleteFeature";
 import { getCheckItemInChecklist, updateCheckItemState } from "../axiosAPI";
+const startState = {
+  checkItemsData: [],
+  isCreateClicked: false,
+};
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "fetchCheckItemData": {
+      return {
+        ...state,
+        checkItemsData: action.payload,
+      };
+    }
+    case "toggleInput": {
+      return {
+        ...state,
+        isCreateClicked: !state.isCreateClicked,
+      };
+    }
+    case "createNewCheckItem": {
+      return {
+        ...state,
+        checkItemsData: [...state.checkItemsData, action.payload],
+      };
+    }
+    case "updateCheckItem": {
+      return {
+        ...state,
+        checkItemsData: state.checkItemsData.map((item) =>
+          item.id === action.payload.checkItemId
+            ? { ...item, state: action.payload.updatedState }
+            : item
+        ),
+      };
+    }
+  }
+};
 const Checkitems = (props) => {
   const { id, cardId } = props;
-  const [checkItemsData, setCheckItemsData] = useState([]);
-  const [isCreateClicked, setIsCreateClicked] = useState(false);
+  // const [checkItemsData, setCheckItemsData] = useState([]);
+  // const [isCreateClicked, setIsCreateClicked] = useState(false);
+  const [state, dispatch] = useReducer(reducer, startState);
   const fetchCheckItem = async () => {
     try {
       const checkitems = await getCheckItemInChecklist(id);
-      setCheckItemsData(checkitems);
+      dispatch({ type: "fetchCheckItemData", payload: checkitems });
     } catch (error) {
       console.log("Error fetching Data");
     }
@@ -21,26 +58,34 @@ const Checkitems = (props) => {
     fetchCheckItem();
   }, []);
   function handleCreateClick() {
-    setIsCreateClicked(true);
+    // setIsCreateClicked(true);
+    dispatch({ type: "toggleInput" });
   }
-  function isCheckItemCreated(newData) {
-    setCheckItemsData((prevData) => [...prevData, newData]);
-  }
+  // function isCheckItemCreated(newData) {
+  //   setCheckItemsData((prevData) => [...prevData, newData]);
+  // }
   function handleDelete(deletedid) {
-    setCheckItemsData((prevList) =>
-      prevList.filter((item) => item.id !== deletedid)
-    );
+    dispatch({
+      type: "fetchCheckItemData",
+      payload: state.checkItemsData.filter((item) => item.id !== deletedid),
+    });
   }
+  // setCheckItemsData((prevList) =>
+  //     prevList.map((item) =>
+  //       item.id === checkItemId ? { ...item, state: newState } : item
+  //     )
+  //   );
   const updateCheckitem = async (id, cardId, state) => {
     try {
-      await updateCheckItemState(cardId, id, state, setCheckItemsData);
+      const stateUpdate = await updateCheckItemState(cardId, id, state);
+      dispatch({ type: "updateCheckItem", payload: { id, stateUpdate } });
     } catch (error) {
       console.log("Error updating checkitem:", error);
     }
   };
   return (
     <div>
-      {checkItemsData.map((item) => {
+      {state.checkItemsData.map((item) => {
         return (
           <>
             <p
@@ -71,8 +116,8 @@ const Checkitems = (props) => {
         );
       })}
       <div>
-        {isCreateClicked && (
-          <CreateCheckItem id={id} isCheckItemCreated={isCheckItemCreated} />
+        {state.isCreateClicked && (
+          <CreateCheckItem id={id} isCheckItemCreated={dispatch} />
         )}
       </div>
       <>
@@ -83,7 +128,7 @@ const Checkitems = (props) => {
           startIcon={<ClearIcon />}
           color="error"
           onClick={() => {
-            setIsCreateClicked(false);
+            dispatch({ type: "toggleInput" });
           }}
         ></Button>
       </>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -9,11 +9,44 @@ import modalBack from "../imgs/modalBack.jpeg";
 import { Link, useParams } from "react-router-dom";
 import { TextField } from "@mui/material";
 const CreateModal = ({ fetchdata }) => {
-  const [name, setName] = useState("");
-  const [open, setOpen] = useState(false);
+  // const [name, setName] = useState("");
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "open_modal": {
+        return {
+          ...state,
+          open: true,
+        };
+      }
+      case "close_modal": {
+        return {
+          ...state,
+          open: false,
+        };
+      }
+      case "setName": {
+        return {
+          ...state,
+          name: action.payload,
+        };
+      }
+      case "resetName": {
+        return {
+          ...state,
+          name: "",
+        };
+      }
+    }
+  };
+  const startState = {
+    open: false,
+    name: "",
+  };
+  const [state, dispatch] = useReducer(reducer, startState);
+  // const [open, setOpen] = useState(false);
   const { id } = useParams();
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => dispatch({ type: "open_modal" });
+  const handleClose = () => dispatch({ type: "close_modal" });
   const style = {
     position: "absolute",
     top: "50%",
@@ -27,12 +60,12 @@ const CreateModal = ({ fetchdata }) => {
   };
   const handleChange = (e) => {
     e.preventDefault();
-    setName(e.target.value);
+    dispatch({ type: "setName", payload: e.target.value });
   };
   const handleSubmit = () => {
-    fetchdata(name);
-    setName("");
+    fetchdata(state.name);
     handleClose();
+    dispatch({ type: "resetName" });
   };
   return (
     <div>
@@ -40,7 +73,7 @@ const CreateModal = ({ fetchdata }) => {
         Create Board
       </Button>
       <Modal
-        open={open}
+        open={state.open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -57,7 +90,7 @@ const CreateModal = ({ fetchdata }) => {
           >
             <TextField
               label="Write Board Name....."
-              value={name}
+              value={state.name}
               type="text"
               onChange={(e) => handleChange(e)}
               style={{ borderRadius: "10px" }}

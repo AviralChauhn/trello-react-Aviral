@@ -1,5 +1,5 @@
 // import { Button } from "@mui/material";
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -9,21 +9,43 @@ import { APIKey, APIToken } from "./config";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import { createNewCheckList } from "../../axiosAPI";
-
+const startState = {
+  checkListName: "",
+};
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "checkListName": {
+      return {
+        ...state,
+        checkListName: action.payload,
+      };
+    }
+    case "resetCheckListName": {
+      return {
+        ...state,
+        checkListName: "",
+      };
+    }
+  }
+};
 const CreateCheckList = (props) => {
   const { id, handleChecklistCreated } = props;
-  const [checkListName, setChecKListName] = useState("");
+  // const [checkListName, setChecKListName] = useState("");
+  const [state, dispatch] = useReducer(reducer, startState);
   const createCheckList = async (name) => {
     try {
       const newCheckList = await createNewCheckList(id, name);
-      handleChecklistCreated(newCheckList);
-      setChecKListName("");
+      handleChecklistCreated({
+        type: "createCheckList",
+        payload: newCheckList,
+      });
+      dispatch({ type: "resetCheckListName" });
     } catch (error) {
       console.log("Error creating checklist:", error);
     }
   };
   function handleCreateClick() {
-    createCheckList(checkListName);
+    createCheckList(state.checkListName);
   }
   return (
     <div>
@@ -38,11 +60,11 @@ const CreateCheckList = (props) => {
         <AccordionDetails>
           <Typography>
             <TextField
-              value={checkListName}
+              value={state.checkListName}
               label="Enter list Name..."
               type="text"
               onChange={(e) => {
-                setChecKListName(e.target.value);
+                dispatch({ type: "checkListName", payload: e.target.value });
               }}
             />
             <Button

@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { useState } from "react";
 import { Box } from "@mui/material";
 import axios from "axios";
 import CreateCheckList from "../components/services/createCheckList";
@@ -25,30 +24,62 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const startState = {
+  checkListData: [],
+  open: false,
+};
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "fetchCheckListData": {
+      return {
+        ...state,
+        checkListData: action.payload,
+      };
+    }
+    case "toggleModal": {
+      return {
+        ...state,
+        open: !state.open,
+      };
+    }
+    case "createCheckList": {
+      return {
+        ...state,
+        checkListData: [...state.checkListData, action.payload],
+      };
+    }
+  }
+};
 const CheckLists = (props) => {
   const { id } = props;
-  const [checkListsData, setCheckListsData] = useState([]);
-  const [open, setOpen] = useState(false);
+  // const [checkListsData, setCheckListsData] = useState([]);
+  // const [open, setOpen] = useState(false);
+  const [state, dispatch] = useReducer(reducer, startState);
   const handleOpen = () => {
-    setOpen(true);
+    // setOpen(true);
+    dispatch({ type: "toggleModal" });
     fetchChecklist();
   };
-  const handleClose = () => setOpen(false);
+  const handleClose = () => dispatch({ type: "toggleModal" });
   const fetchChecklist = async () => {
     try {
       const checkListData = await getCheckListOnCard(id);
-      setCheckListsData(checkListData);
+      dispatch({ type: "fetchCheckListData", payload: checkListData });
     } catch (error) {
       console.log("Error fetching checklists");
     }
   };
-  function handleChecklistCreated(newData) {
-    setCheckListsData((prevData) => [...prevData, newData]);
-  }
+  // function handleChecklistCreated(newData) {
+  //   setCheckListsData((prevData) => [...prevData, newData]);
+  // }
   function handleDelete(deletedid) {
-    setCheckListsData((prevList) =>
-      prevList.filter((item) => item.id !== deletedid)
-    );
+    // setCheckListsData((prevList) =>
+    //   prevList.filter((item) => item.id !== deletedid)
+    // );
+    dispatch({
+      type: "fetchCheckListData",
+      payload: state.checkListData.filter((item) => item.id !== deletedid),
+    });
   }
   return (
     <div style={{ paddingBottom: "4vh" }}>
@@ -67,14 +98,14 @@ const CheckLists = (props) => {
         }}
       ></button>
       <Modal
-        open={open}
+        open={state.open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ overflowY: "auto" }}
       >
         <Box sx={style}>
-          {checkListsData.map((item) => {
+          {state.checkListData.map((item) => {
             return (
               <Accordion
                 sx={{
@@ -120,10 +151,7 @@ const CheckLists = (props) => {
               </Accordion>
             );
           })}
-          <CreateCheckList
-            id={id}
-            handleChecklistCreated={handleChecklistCreated}
-          />
+          <CreateCheckList id={id} handleChecklistCreated={dispatch} />
         </Box>
       </Modal>
     </div>
