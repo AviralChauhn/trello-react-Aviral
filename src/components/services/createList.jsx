@@ -81,7 +81,13 @@ const CreateList = (props) => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
+          <Typography
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "start",
+            }}
+          >
             <TextField
               type="text"
               value={state.name}
@@ -90,7 +96,7 @@ const CreateList = (props) => {
             />
             <Button
               variant="contained"
-              style={{ height: "3vh" }}
+              style={{ marginTop: "1vh" }}
               onClick={handleSubmit}
             >
               Create a new list

@@ -71,7 +71,7 @@ const CreateCard = (props) => {
             />
             <Button
               variant="contained"
-              style={{ height: "3vh" }}
+              style={{ marginTop: "1vh" }}
               onClick={handleCardClick}
             >
               Create a Card
