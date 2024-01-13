@@ -48,7 +48,7 @@ const CreateCheckList = (props) => {
             <Button
               variant="outlined"
               color="success"
-              sx={{ height: "6vh" }}
+              sx={{ marginTop: "1vh" }}
               onClick={handleCreateClick}
             >
               Create
