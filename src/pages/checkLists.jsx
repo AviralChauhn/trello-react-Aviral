@@ -10,6 +10,8 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Checkitems from "./checkitems";
 import DeleteFeature from "../components/services/DeleteFeature";
 import { getCheckListOnCard } from "../axiosAPI";
+import { useDispatch, useSelector } from "react-redux";
+import { checklistActions } from "../store/checkLists-slice";
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
   "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
@@ -24,47 +26,26 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const startState = {
-  checkListData: [],
-  open: false,
-};
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "fetchCheckListData": {
-      return {
-        ...state,
-        checkListData: action.payload,
-      };
-    }
-    case "toggleModal": {
-      return {
-        ...state,
-        open: !state.open,
-      };
-    }
-    case "createCheckList": {
-      return {
-        ...state,
-        checkListData: [...state.checkListData, action.payload],
-      };
-    }
-  }
-};
 const CheckLists = (props) => {
   const { id } = props;
+  const dispatch = useDispatch();
+  const checkListData = useSelector((state) => state.checkList.checkListsData);
+  const open = useSelector((state) => state.checkList.open);
   // const [checkListsData, setCheckListsData] = useState([]);
   // const [open, setOpen] = useState(false);
-  const [state, dispatch] = useReducer(reducer, startState);
+  // const [state, dispatch] = useReducer(reducer, startState);
   const handleOpen = () => {
     // setOpen(true);
-    dispatch({ type: "toggleModal" });
+    dispatch(checklistActions.toggleModal());
     fetchChecklist();
   };
-  const handleClose = () => dispatch({ type: "toggleModal" });
+  const handleClose = () => dispatch(checklistActions.toggleModal());
   const fetchChecklist = async () => {
     try {
-      const checkListData = await getCheckListOnCard(id);
-      dispatch({ type: "fetchCheckListData", payload: checkListData });
+      const checkData = await getCheckListOnCard(id);
+      // if (checkData.length != checkListData.length) {
+      dispatch(checklistActions.fetchCheckListsData(checkData));
+      // }
     } catch (error) {
       console.log("Error fetching checklists");
     }
@@ -73,14 +54,13 @@ const CheckLists = (props) => {
   //   setCheckListsData((prevData) => [...prevData, newData]);
   // }
   function handleDelete(deletedid) {
-    // setCheckListsData((prevList) =>
-    //   prevList.filter((item) => item.id !== deletedid)
-    // );
-    dispatch({
-      type: "fetchCheckListData",
-      payload: state.checkListData.filter((item) => item.id !== deletedid),
-    });
+    dispatch(checklistActions.deleteCheckListsData(deletedid));
   }
+  //   dispatch({
+  //     type: "fetchCheckListData",
+  //     payload: state.checkListData.filter((item) => item.id !== deletedid),
+  //   });
+  // }
   return (
     <div style={{ paddingBottom: "4vh" }}>
       <button
@@ -98,14 +78,14 @@ const CheckLists = (props) => {
         }}
       ></button>
       <Modal
-        open={state.open}
+        open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ overflowY: "auto" }}
       >
         <Box sx={style}>
-          {state.checkListData.map((item) => {
+          {checkListData.map((item) => {
             return (
               <Accordion
                 sx={{
@@ -151,7 +131,7 @@ const CheckLists = (props) => {
               </Accordion>
             );
           })}
-          <CreateCheckList id={id} handleChecklistCreated={dispatch} />
+          <CreateCheckList id={id} />
         </Box>
       </Modal>
     </div>

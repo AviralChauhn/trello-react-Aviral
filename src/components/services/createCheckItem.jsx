@@ -3,34 +3,38 @@ import React, { useReducer, useState } from "react";
 import axios from "axios";
 import { APIKey, APIToken } from "./config";
 import { createNewCard, createNewCheckItem } from "../../axiosAPI";
-const startState = {
-  checkItemName: "",
-};
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "setName": {
-      return {
-        ...state,
-        checkItemName: action.payload,
-      };
-    }
-    case "resetName": {
-      return {
-        ...state,
-        checkItemName: "",
-      };
-    }
-  }
-};
+import { useDispatch, useSelector } from "react-redux";
+import { checkItemActions } from "../../store/checkItem-slice";
+// const startState = {
+//   checkItemName: "",
+// };
+// const reducer = (state, action) => {
+//   switch (action.type) {
+//     case "setName": {
+//       return {
+//         ...state,
+//         checkItemName: action.payload,
+//       };
+//     }
+//     case "resetName": {
+//       return {
+//         ...state,
+//         checkItemName: "",
+//       };
+//     }
+//   }
+// };
 const CreateCheckItem = (props) => {
-  const { id, isCheckItemCreated } = props;
+  const { id } = props;
+  const dispatch = useDispatch();
+  const checkItemName = useSelector((state) => state.checkItem.checkItemName);
   // const [checkItemName, setCheckItemName] = useState("");
-  const [state, dispatch] = useReducer(reducer, startState);
+  // const [state, dispatch] = useReducer(reducer, startState);
   function handleName(e) {
     // setCheckItemName(e.target.value);
-    dispatch({ type: "setName", payload: e.target.value });
+    dispatch(checkItemActions.setCheckItemName(e.target.value));
   }
-  const createCheckItem = async () => {
+  const createCheckItem = async (name) => {
     // axios
     //   .post(
     //     `https://api.trello.com/1/checklists/${id}/checkItems?name=${checkItemName}&key=${APIKey}&token=${APIToken}`
@@ -42,11 +46,9 @@ const CreateCheckItem = (props) => {
     //   })
     //   .catch((err) => console.log(err));
     try {
-      const newCheckItem = await createNewCheckItem(id, state.checkItemName);
-      // isCheckItemCreated(newCheckItem);
-      // setCheckItemName("");
-      isCheckItemCreated({ type: "createNewCheckItem", payload: newCheckItem });
-      dispatch({ type: "resetName" });
+      const newCheckItem = await createNewCheckItem(id, name);
+      dispatch(checkItemActions.createCheckItem(newCheckItem));
+      dispatch(checkItemActions.resetCheckItemName());
     } catch (error) {
       console.log("Error creating checkitem:", error);
     }
@@ -54,11 +56,15 @@ const CreateCheckItem = (props) => {
   return (
     <div style={{ padding: "2vh", position: "relative", display: "flex" }}>
       <TextField
-        value={state.checkItemName}
+        value={checkItemName}
         label="Enter item name...."
         onChange={(e) => handleName(e)}
       />
-      <Button variant="contained" color="success" onClick={createCheckItem}>
+      <Button
+        variant="contained"
+        color="success"
+        onClick={() => createCheckItem(checkItemName)}
+      >
         Submit
       </Button>
     </div>

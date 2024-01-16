@@ -5,51 +5,58 @@ import ClearIcon from "@mui/icons-material/Clear";
 import CreateCheckItem from "../components/services/createCheckItem";
 import DeleteFeature from "../components/services/DeleteFeature";
 import { getCheckItemInChecklist, updateCheckItemState } from "../axiosAPI";
-const startState = {
-  checkItemsData: [],
-  isCreateClicked: false,
-};
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "fetchCheckItemData": {
-      return {
-        ...state,
-        checkItemsData: action.payload,
-      };
-    }
-    case "toggleInput": {
-      return {
-        ...state,
-        isCreateClicked: !state.isCreateClicked,
-      };
-    }
-    case "createNewCheckItem": {
-      return {
-        ...state,
-        checkItemsData: [...state.checkItemsData, action.payload],
-      };
-    }
-    case "updateCheckItem": {
-      return {
-        ...state,
-        checkItemsData: state.checkItemsData.map((item) =>
-          item.id === action.payload.checkItemId
-            ? { ...item, state: action.payload.updatedState }
-            : item
-        ),
-      };
-    }
-  }
-};
+import { useDispatch, useSelector } from "react-redux";
+import { checkItemActions } from "../store/checkItem-slice";
+// const startState = {
+//   checkItemsData: [],
+//   isCreateClicked: false,
+// };
+// const reducer = (state, action) => {
+//   switch (action.type) {
+//     case "fetchCheckItemData": {
+//       return {
+//         ...state,
+//         checkItemsData: action.payload,
+//       };
+//     }
+//     case "toggleInput": {
+//       return {
+//         ...state,
+//         isCreateClicked: !state.isCreateClicked,
+//       };
+//     }
+//     case "createNewCheckItem": {
+//       return {
+//         ...state,
+//         checkItemsData: [...state.checkItemsData, action.payload],
+//       };
+//     }
+//     case "updateCheckItem": {
+//       return {
+//         ...state,
+//         checkItemsData: state.checkItemsData.map((item) =>
+//           item.id === action.payload.checkItemId
+//             ? { ...item, state: action.payload.updatedState }
+//             : item
+//         ),
+//       };
+//     }
+//   }
+// };
 const Checkitems = (props) => {
   const { id, cardId } = props;
+  const checkItemData = useSelector((state) => state.checkItem.checkItemData);
+  const isCreateClicked = useSelector(
+    (state) => state.checkItem.isCreateClicked
+  );
+  const dispatch = useDispatch();
   // const [checkItemsData, setCheckItemsData] = useState([]);
   // const [isCreateClicked, setIsCreateClicked] = useState(false);
-  const [state, dispatch] = useReducer(reducer, startState);
+  // const [state, dispatch] = useReducer(reducer, startState);
   const fetchCheckItem = async () => {
     try {
       const checkitems = await getCheckItemInChecklist(id);
-      dispatch({ type: "fetchCheckItemData", payload: checkitems });
+      dispatch(checkItemActions.fetchCheckItem(checkitems));
     } catch (error) {
       console.log("Error fetching Data");
     }
@@ -59,16 +66,13 @@ const Checkitems = (props) => {
   }, []);
   function handleCreateClick() {
     // setIsCreateClicked(true);
-    dispatch({ type: "toggleInput" });
+    dispatch(checkItemActions.toggleCreate());
   }
   // function isCheckItemCreated(newData) {
   //   setCheckItemsData((prevData) => [...prevData, newData]);
   // }
   function handleDelete(deletedid) {
-    dispatch({
-      type: "fetchCheckItemData",
-      payload: state.checkItemsData.filter((item) => item.id !== deletedid),
-    });
+    dispatch(checkItemActions.deleteCheckItem(deletedid));
   }
   // setCheckItemsData((prevList) =>
   //     prevList.map((item) =>
@@ -78,14 +82,16 @@ const Checkitems = (props) => {
   const updateCheckitem = async (id, cardId, state) => {
     try {
       const stateUpdate = await updateCheckItemState(cardId, id, state);
-      dispatch({ type: "updateCheckItem", payload: { id, stateUpdate } });
+      // console.log(stateUpdate);
+      // dispatch({ type: "updateCheckItem", payload: { id, stateUpdate } });
+      dispatch(checkItemActions.updateCheckItem({ id, stateUpdate }));
     } catch (error) {
       console.log("Error updating checkitem:", error);
     }
   };
   return (
     <div>
-      {state.checkItemsData.map((item) => {
+      {checkItemData.map((item) => {
         return (
           <>
             <p
@@ -115,11 +121,7 @@ const Checkitems = (props) => {
           </>
         );
       })}
-      <div>
-        {state.isCreateClicked && (
-          <CreateCheckItem id={id} isCheckItemCreated={dispatch} />
-        )}
-      </div>
+      <div>{isCreateClicked && <CreateCheckItem id={id} />}</div>
       <>
         <Button variant="outlined" color="success" onClick={handleCreateClick}>
           Create A CheckItem
@@ -128,7 +130,7 @@ const Checkitems = (props) => {
           startIcon={<ClearIcon />}
           color="error"
           onClick={() => {
-            dispatch({ type: "toggleInput" });
+            dispatch(checkItemActions.toggleCreate());
           }}
         ></Button>
       </>

@@ -10,44 +10,51 @@ import DeleteFeature from "../components/services/DeleteFeature";
 import { getListOnBoard } from "../axiosAPI";
 // import { useBoardContext } from "../components/services/BoardProvider";
 import { useBoardContext } from "../components/services/BoardProvider";
+import { useDispatch, useSelector } from "react-redux";
+import { listActions } from "../store/list-slice";
 const CardLists = () => {
   const { id } = useParams();
-  const startState = {
-    listData: [],
-    isData: true,
-  };
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case "fetchListData": {
-        return {
-          ...state,
-          listData: action.payload,
-        };
-      }
-      case "setData": {
-        return {
-          ...state,
-          isData: false,
-        };
-      }
-      case "createNewList": {
-        return {
-          ...state,
-          listData: [...state.listData, action.payload],
-        };
-      }
-    }
-  };
+  const listData = useSelector((state) => state.list.listData);
+  const isData = useSelector((state) => state.list.isData);
+  const dispatch = useDispatch();
+  // const startState = {
+  //   listData: [],
+  //   isData: true,
+  // };
+  // const reducer = (state, action) => {
+  //   switch (action.type) {
+  //     case "fetchListData": {
+  //       return {
+  //         ...state,
+  //         listData: action.payload,
+  //       };
+  //     }
+  //     case "setData": {
+  //       return {
+  //         ...state,
+  //         isData: false,
+  //       };
+  //     }
+  //     case "createNewList": {
+  //       return {
+  //         ...state,
+  //         listData: [...state.listData, action.payload],
+  //       };
+  //     }
+  //   }
+  // };
   // const [listData, setListData] = useState([]);
   // const [isData, setIsData] = useState(true);
-  const [state, dispatch] = useReducer(reducer, startState);
+  // const [state, dispatch] = useReducer(reducer, startState);
   const navigate = useNavigate();
   const { backgroundImageObject, backgroundColorObject } = useBoardContext();
   const fetchData = async () => {
     try {
       const lists = await getListOnBoard(id);
-      dispatch({ type: "fetchListData", payload: lists });
-      dispatch({ type: "setData" });
+      // dispatch({ type: "fetchListData", payload: lists });
+      dispatch(listActions.fetchListData(lists));
+      dispatch(listActions.toggleIsData());
+      // dispatch({ type: "setData" });
       // setIsData(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -59,10 +66,7 @@ const CardLists = () => {
   }, []);
 
   function handleDelete(deletedId) {
-    dispatch({
-      type: "fetchListData",
-      payload: state.listData.filter((item) => item.id !== deletedId),
-    });
+    dispatch(listActions.deleteList(deletedId));
   }
 
   return (
@@ -89,8 +93,8 @@ const CardLists = () => {
           marginTop: "5vh",
         }}
       >
-        {!state.isData ? (
-          state.listData.map((item) => {
+        {!isData ? (
+          listData.map((item) => {
             return (
               <div
                 key={item.id}
@@ -154,7 +158,7 @@ const CardLists = () => {
           </div>
         )}
       </div>
-      <CreateList setListData={dispatch} />
+      <CreateList />
     </div>
   );
 };

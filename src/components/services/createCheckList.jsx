@@ -9,43 +9,44 @@ import { APIKey, APIToken } from "./config";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import { createNewCheckList } from "../../axiosAPI";
-const startState = {
-  checkListName: "",
-};
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "checkListName": {
-      return {
-        ...state,
-        checkListName: action.payload,
-      };
-    }
-    case "resetCheckListName": {
-      return {
-        ...state,
-        checkListName: "",
-      };
-    }
-  }
-};
+import { useDispatch, useSelector } from "react-redux";
+import { checklistActions } from "../../store/checkLists-slice";
+// const startState = {
+//   checkListName: "",
+// };
+// const reducer = (state, action) => {
+//   switch (action.type) {
+//     case "checkListName": {
+//       return {
+//         ...state,
+//         checkListName: action.payload,
+//       };
+//     }
+//     case "resetCheckListName": {
+//       return {
+//         ...state,
+//         checkListName: "",
+//       };
+//     }
+//   }
+// };
 const CreateCheckList = (props) => {
-  const { id, handleChecklistCreated } = props;
+  const { id } = props;
+  const dispatch = useDispatch();
+  const name = useSelector((state) => state.checkList.name);
   // const [checkListName, setChecKListName] = useState("");
-  const [state, dispatch] = useReducer(reducer, startState);
+  // const [state, dispatch] = useReducer(reducer, startState);
   const createCheckList = async (name) => {
     try {
       const newCheckList = await createNewCheckList(id, name);
-      handleChecklistCreated({
-        type: "createCheckList",
-        payload: newCheckList,
-      });
-      dispatch({ type: "resetCheckListName" });
+      dispatch(checklistActions.createCheckList(newCheckList));
+      dispatch(checklistActions.resetName());
     } catch (error) {
       console.log("Error creating checklist:", error);
     }
   };
   function handleCreateClick() {
-    createCheckList(state.checkListName);
+    createCheckList(name);
   }
   return (
     <div>
@@ -60,11 +61,11 @@ const CreateCheckList = (props) => {
         <AccordionDetails>
           <Typography>
             <TextField
-              value={state.checkListName}
+              value={name}
               label="Enter list Name..."
               type="text"
               onChange={(e) => {
-                dispatch({ type: "checkListName", payload: e.target.value });
+                dispatch(checklistActions.setName(e.target.value));
               }}
             />
             <Button
