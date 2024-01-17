@@ -8,45 +8,54 @@ import modalimg from "../imgs/ModalStart.svg";
 import modalBack from "../imgs/modalBack.jpeg";
 import { Link, useParams } from "react-router-dom";
 import { TextField } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { boardAction } from "../../store/board-slice";
 const CreateModal = ({ fetchdata }) => {
   // const [name, setName] = useState("");
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case "open_modal": {
-        return {
-          ...state,
-          open: true,
-        };
-      }
-      case "close_modal": {
-        return {
-          ...state,
-          open: false,
-        };
-      }
-      case "setName": {
-        return {
-          ...state,
-          name: action.payload,
-        };
-      }
-      case "resetName": {
-        return {
-          ...state,
-          name: "",
-        };
-      }
-    }
-  };
-  const startState = {
-    open: false,
-    name: "",
-  };
-  const [state, dispatch] = useReducer(reducer, startState);
+  // const reducer = (state, action) => {
+  //   switch (action.type) {
+  //     case "open_modal": {
+  //       return {
+  //         ...state,
+  //         open: true,
+  //       };
+  //     }
+  //     case "close_modal": {
+  //       return {
+  //         ...state,
+  //         open: false,
+  //       };
+  //     }
+  //     case "setName": {
+  //       return {
+  //         ...state,
+  //         name: action.payload,
+  //       };
+  //     }
+  //     case "resetName": {
+  //       return {
+  //         ...state,
+  //         name: "",
+  //       };
+  //     }
+  //   }
+  // };
+  // const startState = {
+  //   open: false,
+  //   name: "",
+  // };
+  // const [state, dispatch] = useReducer(reducer, startState);
   // const [open, setOpen] = useState(false);
   const { id } = useParams();
-  const handleOpen = () => dispatch({ type: "open_modal" });
-  const handleClose = () => dispatch({ type: "close_modal" });
+  const name = useSelector((state) => state.board.name);
+  const open = useSelector((state) => state.board.open);
+  const dispatch = useDispatch();
+  const handleOpen = () => {
+    dispatch(boardAction.openModal());
+  };
+  const handleClose = () => {
+    dispatch(boardAction.closeModal());
+  };
   const style = {
     position: "absolute",
     top: "50%",
@@ -60,12 +69,12 @@ const CreateModal = ({ fetchdata }) => {
   };
   const handleChange = (e) => {
     e.preventDefault();
-    dispatch({ type: "setName", payload: e.target.value });
+    dispatch(boardAction.setName(e.target.value));
   };
   const handleSubmit = () => {
-    fetchdata(state.name);
+    fetchdata(name);
     handleClose();
-    dispatch({ type: "resetName" });
+    dispatch(boardAction.resetName());
   };
   return (
     <div>
@@ -73,7 +82,7 @@ const CreateModal = ({ fetchdata }) => {
         Create Board
       </Button>
       <Modal
-        open={state.open}
+        open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -90,7 +99,7 @@ const CreateModal = ({ fetchdata }) => {
           >
             <TextField
               label="Write Board Name....."
-              value={state.name}
+              value={name}
               type="text"
               onChange={(e) => handleChange(e)}
               style={{ borderRadius: "10px" }}

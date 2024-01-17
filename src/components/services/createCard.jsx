@@ -8,20 +8,29 @@ import Typography from "@mui/material/Typography";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { createNewCard } from "../../axiosAPI";
+import { useDispatch, useSelector } from "react-redux";
+import { cardActions } from "../../store/card-slice";
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
   "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
 const CreateCard = (props) => {
-  const { id, onCardCreate } = props;
-  const [cardName, setCardName] = useState("");
+  const { id } = props;
+  const cardName = useSelector((state) =>
+    state.card.cardName.find((item) => item.id === id)
+  );
+  const dispatch = useDispatch();
+  // const [cardName, setCardName] = useState("");
   function handleCardChange(e) {
-    setCardName(e.target.value);
+    // setCardName(e.target.value);
+    dispatch(cardActions.setCardName({ id, value: e.target.value }));
   }
   async function handleCardClick() {
     try {
-      const newCard = await createNewCard(id, cardName);
-      onCardCreate(newCard);
-      setCardName("");
+      const newCard = await createNewCard(id, cardName?.name);
+      // onCardCreate(newCard);
+      // setCardName("");
+      dispatch(cardActions.createCard({ newCard, id }));
+      dispatch(cardActions.resetName());
     } catch (error) {
       console.log("Error creating card:", error);
     }
@@ -64,7 +73,7 @@ const CreateCard = (props) => {
           <Typography>
             <TextField
               type="text"
-              value={cardName}
+              value={cardName ? cardName.name : ""}
               label="Insert your card name"
               style={{ width: "100%" }}
               onChange={(e) => handleCardChange(e)}

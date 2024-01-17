@@ -7,12 +7,17 @@ import { APIKey, APIToken } from "../components/services/config";
 import { Link } from "react-router-dom";
 import { ThreeCircles } from "react-loader-spinner";
 import { getBoards } from "../axiosAPI";
+import { useDispatch, useSelector } from "react-redux";
+import { boardAction } from "../store/board-slice";
 const Boards = () => {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
+  const data = useSelector((state) => state.board.data);
+  const dispatch = useDispatch();
   const fetchData = async () => {
     try {
       const boardsData = await getBoards();
-      setData(boardsData);
+      dispatch(boardAction.fetchBoardsData(boardsData));
+      // setData(boardsData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
