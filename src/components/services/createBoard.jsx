@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import CreateModal from "./createModal";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,8 @@ const CreateBoard = () => {
       navigate(`/board/${boardData.id}`);
     } catch (error) {
       console.log("Error Creating Board");
+      alert("Error Creating Board!!!!!");
+      window.location.reload();
     }
   }
 

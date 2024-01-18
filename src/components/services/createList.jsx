@@ -52,6 +52,8 @@ const CreateList = (props) => {
       return newListData;
     } catch (error) {
       console.log("Error Creating List", error);
+      alert("Error Creating list !!!!");
+      window.location.reload();
     }
   }
   function handleInput(e) {

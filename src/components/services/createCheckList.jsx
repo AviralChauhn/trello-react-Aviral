@@ -11,6 +11,8 @@ import axios from "axios";
 import { createNewCheckList } from "../../axiosAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { checklistActions } from "../../store/checkLists-slice";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 // const startState = {
 //   checkListName: "",
 // };
@@ -32,6 +34,7 @@ import { checklistActions } from "../../store/checkLists-slice";
 // };
 const CreateCheckList = (props) => {
   const { id } = props;
+  const [isError, setIsError] = useState(false);
   const dispatch = useDispatch();
   const name = useSelector((state) => state.checkList.name);
   // const [checkListName, setChecKListName] = useState("");
@@ -43,6 +46,7 @@ const CreateCheckList = (props) => {
       dispatch(checklistActions.resetName());
     } catch (error) {
       console.log("Error creating checklist:", error);
+      setIsError(true);
     }
   };
   function handleCreateClick() {
@@ -58,26 +62,34 @@ const CreateCheckList = (props) => {
         >
           <Typography>Create Checklist</Typography>
         </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            <TextField
-              value={name}
-              label="Enter list Name..."
-              type="text"
-              onChange={(e) => {
-                dispatch(checklistActions.setName(e.target.value));
-              }}
-            />
-            <Button
-              variant="outlined"
-              color="success"
-              sx={{ marginTop: "1vh" }}
-              onClick={handleCreateClick}
-            >
-              Create
-            </Button>
-          </Typography>
-        </AccordionDetails>
+        {isError ? (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert variant="filled" severity="error">
+              Error Creating checkList!!!
+            </Alert>
+          </Stack>
+        ) : (
+          <AccordionDetails>
+            <Typography>
+              <TextField
+                value={name}
+                label="Enter list Name..."
+                type="text"
+                onChange={(e) => {
+                  dispatch(checklistActions.setName(e.target.value));
+                }}
+              />
+              <Button
+                variant="outlined"
+                color="success"
+                sx={{ marginTop: "1vh" }}
+                onClick={handleCreateClick}
+              >
+                Create
+              </Button>
+            </Typography>
+          </AccordionDetails>
+        )}
       </Accordion>
     </div>
   );

@@ -10,9 +10,11 @@ import { useState } from "react";
 import { createNewCard } from "../../axiosAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { cardActions } from "../../store/card-slice";
-
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 const CreateCard = (props) => {
   const { id } = props;
+  const [isError, setIsError] = useState(false);
   const cardName = useSelector((state) => state.card.cardName[id]);
   const dispatch = useDispatch();
 
@@ -27,6 +29,7 @@ const CreateCard = (props) => {
       dispatch(cardActions.resetName());
     } catch (error) {
       console.log("Error creating card:", error);
+      setIsError(true);
     }
   }
 
@@ -59,24 +62,32 @@ const CreateCard = (props) => {
             </button>
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
-          <Typography>
-            <TextField
-              type="text"
-              value={cardName ? cardName.name : ""}
-              label="Insert your card name"
-              style={{ width: "100%" }}
-              onChange={(e) => handleCardChange(e)}
-            />
-            <Button
-              variant="contained"
-              style={{ marginTop: "1vh" }}
-              onClick={handleCardClick}
-            >
-              Create a Card
-            </Button>
-          </Typography>
-        </AccordionDetails>
+        {isError ? (
+          <Stack sx={{ width: "100%" }} spacing={2}>
+            <Alert variant="filled" severity="error">
+              Error Creating card!!!
+            </Alert>
+          </Stack>
+        ) : (
+          <AccordionDetails>
+            <Typography>
+              <TextField
+                type="text"
+                value={cardName ? cardName.name : ""}
+                label="Insert your card name"
+                style={{ width: "100%" }}
+                onChange={(e) => handleCardChange(e)}
+              />
+              <Button
+                variant="contained"
+                style={{ marginTop: "1vh" }}
+                onClick={handleCardClick}
+              >
+                Create a Card
+              </Button>
+            </Typography>
+          </AccordionDetails>
+        )}
       </Accordion>
     </div>
   );

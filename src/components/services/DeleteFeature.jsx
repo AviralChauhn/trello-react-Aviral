@@ -9,6 +9,7 @@ const DeleteFeature = ({ type, id, checkId, onDelete }) => {
       await deleteItem(type, id, checkId, onDelete);
     } catch (error) {
       console.log("Error deleting", error);
+      alert("Error Deleting !!!!");
     }
   };
   return type == "list" ? (
