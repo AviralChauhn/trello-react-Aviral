@@ -1,5 +1,5 @@
-import { Button, TextField } from "@mui/material";
 import React from "react";
+import { Button, TextField } from "@mui/material";
 import { createNewCheckItem } from "../../axiosAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { checkItemActions } from "../../store/checkItem-slice";
@@ -7,8 +7,8 @@ import { checkItemActions } from "../../store/checkItem-slice";
 const CreateCheckItem = (props) => {
   const { id } = props;
   const dispatch = useDispatch();
-  const checkItemName = useSelector((state) =>
-    state.checkItem.checkItemName.find((item) => item.id === id)
+  const checkItemName = useSelector(
+    (state) => state.checkItem.checkItemName[id]
   );
 
   const handleName = (e) => {
@@ -18,7 +18,7 @@ const CreateCheckItem = (props) => {
   const createCheckItem = async () => {
     try {
       const newCheckItem = await createNewCheckItem(id, checkItemName?.name);
-      dispatch(checkItemActions.createCheckItem({ newCheckItem, id }));
+      dispatch(checkItemActions.createCheckItem({ id, newCheckItem }));
       dispatch(checkItemActions.resetCheckItemName());
     } catch (error) {
       console.log("Error creating checkitem:", error);

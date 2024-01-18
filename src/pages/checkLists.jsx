@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Box } from "@mui/material";
@@ -12,6 +12,8 @@ import DeleteFeature from "../components/services/DeleteFeature";
 import { getCheckListOnCard } from "../axiosAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { checklistActions } from "../store/checkLists-slice";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
 const APIToken =
   "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
@@ -31,6 +33,7 @@ const CheckLists = (props) => {
   const dispatch = useDispatch();
   const checkListData = useSelector((state) => state.checkList.checkListsData);
   const open = useSelector((state) => state.checkList.open);
+  const [isError, setIsError] = useState(false);
   // const [checkListsData, setCheckListsData] = useState([]);
   // const [open, setOpen] = useState(false);
   // const [state, dispatch] = useReducer(reducer, startState);
@@ -48,6 +51,7 @@ const CheckLists = (props) => {
       // }
     } catch (error) {
       console.log("Error fetching checklists");
+      setIsError(true);
     }
   };
   // function handleChecklistCreated(newData) {
@@ -85,52 +89,58 @@ const CheckLists = (props) => {
         sx={{ overflowY: "auto" }}
       >
         <Box sx={style}>
-          {checkListData.map((item) => {
-            return (
-              <Accordion
-                sx={{
-                  maxHeight: "50vh",
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                }}
-                key={item.id}
-              >
-                <AccordionSummary
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
+          {isError ? (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+              <Alert severity="error">Error Fetching Boards!!!!</Alert>
+            </Stack>
+          ) : (
+            checkListData.map((item) => {
+              return (
+                <Accordion
+                  sx={{
+                    maxHeight: "50vh",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                  }}
+                  key={item.id}
                 >
-                  <Typography
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginRight: "6rem",
-                    }}
+                  <AccordionSummary
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
                   >
-                    {item.name}
-                  </Typography>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "right",
-                      width: "100%",
-                      position: "absolute",
-                    }}
-                  >
-                    <DeleteFeature
-                      type="checklist"
-                      id={item.id}
-                      onDelete={handleDelete}
-                    />
-                  </div>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography>
-                    <Checkitems id={item.id} cardId={id} />
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            );
-          })}
+                    <Typography
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginRight: "6rem",
+                      }}
+                    >
+                      {item.name}
+                    </Typography>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "right",
+                        width: "100%",
+                        position: "absolute",
+                      }}
+                    >
+                      <DeleteFeature
+                        type="checklist"
+                        id={item.id}
+                        onDelete={handleDelete}
+                      />
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography>
+                      <Checkitems id={item.id} cardId={id} />
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })
+          )}
           <CreateCheckList id={id} />
         </Box>
       </Modal>

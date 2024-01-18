@@ -9,8 +9,11 @@ import { ThreeCircles } from "react-loader-spinner";
 import { getBoards } from "../axiosAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { boardAction } from "../store/board-slice";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 const Boards = () => {
   // const [data, setData] = useState([]);
+  const [isError, setIsError] = useState(false);
   const data = useSelector((state) => state.board.data);
   const dispatch = useDispatch();
   const fetchData = async () => {
@@ -20,6 +23,7 @@ const Boards = () => {
       // setData(boardsData);
     } catch (error) {
       console.error("Error fetching data:", error);
+      setIsError(true);
     }
   };
   useEffect(() => {
@@ -44,7 +48,28 @@ const Boards = () => {
             justifyContent: "center",
           }}
         >
-          {data.length ? (
+          {isError ? (
+            <div
+              style={{
+                width: "100vw",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Stack sx={{ width: "40%" }} spacing={2}>
+                <Alert
+                  severity="error"
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  Error Fetching Boards!!!!
+                </Alert>
+              </Stack>
+            </div>
+          ) : data.length ? (
             data.map((item) => {
               return (
                 <>
@@ -63,12 +88,14 @@ const Boards = () => {
                           backgroundSize: "cover",
                           backgroundPosition: "center",
                           justifyContent: "space-around",
+                          minHeight: 75,
                         }}
                       >
                         <CardContent
                           sx={{
                             backgroundColor: "rgba(0,0,0,0.35)",
                             height: "11vh",
+                            minHeight: 75,
                           }}
                         >
                           <Typography

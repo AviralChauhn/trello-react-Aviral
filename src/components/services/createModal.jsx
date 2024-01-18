@@ -115,7 +115,7 @@ const CreateModal = ({ fetchdata }) => {
                 marginLeft: "1vw",
                 backgroundColor: "blue",
                 color: "white",
-                height: "6vh",
+                // height: "6vh",
                 // width: "8vw",
                 border: "none",
                 boxShadow: "2px 2px 5px rgba(5, 5, 5, 0.413)",

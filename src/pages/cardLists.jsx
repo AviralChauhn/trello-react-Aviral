@@ -7,11 +7,15 @@ import CreateList from "../components/services/createList";
 import CardsInList from "./cardsInList";
 import { useNavigate } from "react-router-dom";
 import DeleteFeature from "../components/services/DeleteFeature";
-import { getListOnBoard } from "../axiosAPI";
+import { getBoards, getListOnBoard } from "../axiosAPI";
 // import { useBoardContext } from "../components/services/BoardProvider";
 import { useBoardContext } from "../components/services/BoardProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/list-slice";
+import { boardAction } from "../store/board-slice";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+
 const CardLists = () => {
   const { id } = useParams();
   const listData = useSelector((state) => state.list.listData);
@@ -46,10 +50,15 @@ const CardLists = () => {
   // const [listData, setListData] = useState([]);
   // const [isData, setIsData] = useState(true);
   // const [state, dispatch] = useReducer(reducer, startState);
-  const navigate = useNavigate();
-  const { backgroundImageObject, backgroundColorObject } = useBoardContext();
+  const [isError, setIsError] = useState(false);
+  // const { backgroundImageObject, backgroundColorObject } = useBoardContext();
+  const backImage = useSelector((state) =>
+    state.board.data.filter((item) => item.id === id)
+  );
   const fetchData = async () => {
     try {
+      const boardsData = await getBoards();
+      dispatch(boardAction.fetchBoardsData(boardsData));
       const lists = await getListOnBoard(id);
       // dispatch({ type: "fetchListData", payload: lists });
       dispatch(listActions.fetchListData(lists));
@@ -58,9 +67,12 @@ const CardLists = () => {
       // setIsData(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-      navigate(`/error`);
+      setIsError(true);
+      // navigate(`/error`);
     }
   };
+  const img = backImage.map((item) => item.prefs.backgroundImage);
+  const backColor = backImage.map((item) => item.prefs.backgroundColor);
   useEffect(() => {
     fetchData();
   }, []);
@@ -75,10 +87,8 @@ const CardLists = () => {
         display: "flex",
         width: "",
         marginTop: "10vh",
-        backgroundImage: `url(${backgroundImageObject[id]})`,
-        backgroundColor: backgroundColorObject[id]
-          ? backgroundColorObject[id]
-          : "#0079BF",
+        backgroundImage: `url(${img[0]})`,
+        backgroundColor: backColor[0] ? backColor[0] : "#0079BF",
         backgroundPosition: "center",
         backgroundSize: "cover",
         height: "90vh",
@@ -93,7 +103,20 @@ const CardLists = () => {
           marginTop: "5vh",
         }}
       >
-        {!isData ? (
+        {isError ? (
+          <div
+            style={{
+              width: "100vw",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Stack spacing={2}>
+              <Alert severity="error">Error Fetching Lists!!!!</Alert>
+            </Stack>
+          </div>
+        ) : !isData ? (
           listData.map((item) => {
             return (
               <div
@@ -158,7 +181,7 @@ const CardLists = () => {
           </div>
         )}
       </div>
-      <CreateList />
+      {isError ? "" : <CreateList />}
     </div>
   );
 };

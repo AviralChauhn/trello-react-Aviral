@@ -10,38 +10,29 @@ import { useState } from "react";
 import { createNewCard } from "../../axiosAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { cardActions } from "../../store/card-slice";
-const APIKey = "4aeb0a47815eecee3ba69f1ba386559b";
-const APIToken =
-  "ATTA393b892e76564b45fbf21cfceae1f7b3267a7d4b22f659edab872a7ab5f2c8516CA3A037";
+
 const CreateCard = (props) => {
   const { id } = props;
-  const cardName = useSelector((state) =>
-    state.card.cardName.find((item) => item.id === id)
-  );
+  const cardName = useSelector((state) => state.card.cardName[id]);
   const dispatch = useDispatch();
-  // const [cardName, setCardName] = useState("");
+
   function handleCardChange(e) {
-    // setCardName(e.target.value);
     dispatch(cardActions.setCardName({ id, value: e.target.value }));
   }
+
   async function handleCardClick() {
     try {
       const newCard = await createNewCard(id, cardName?.name);
-      // onCardCreate(newCard);
-      // setCardName("");
-      dispatch(cardActions.createCard({ newCard, id }));
+      dispatch(cardActions.createCard({ id, newCard })); // Modified payload structure
       dispatch(cardActions.resetName());
     } catch (error) {
       console.log("Error creating card:", error);
     }
   }
+
   return (
     <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        marginLeft: "1vw",
-      }}
+      style={{ display: "flex", justifyContent: "center", marginLeft: "1vw" }}
     >
       <Accordion
         sx={{
@@ -49,7 +40,6 @@ const CreateCard = (props) => {
           boxShadow:
             "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
           margin: "12px",
-          // border: "2px solid black",
         }}
       >
         <AccordionSummary
