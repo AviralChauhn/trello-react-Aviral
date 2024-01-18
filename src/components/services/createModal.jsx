@@ -10,6 +10,7 @@ import { Link, useParams } from "react-router-dom";
 import { TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { boardAction } from "../../store/board-slice";
+import { NoEncryption } from "@mui/icons-material";
 const CreateModal = ({ fetchdata }) => {
   // const [name, setName] = useState("");
   // const reducer = (state, action) => {
@@ -78,7 +79,18 @@ const CreateModal = ({ fetchdata }) => {
   };
   return (
     <div>
-      <Button variant="contained" onClick={handleOpen}>
+      <Button
+        variant="contained"
+        onClick={handleOpen}
+        sx={{
+          boxShadow: "none",
+          backgroundColor: "#1c74d4",
+          "&:hover": {
+            boxShadow: "none",
+            backgroundColor: "#1c74d4",
+          },
+        }}
+      >
         Create Board
       </Button>
       <Modal

@@ -6,6 +6,7 @@ const boardSlice = createSlice({
     data: [],
     open: false,
     name: "",
+    isData: true,
   },
   reducers: {
     fetchBoardsData(state, action) {
@@ -22,6 +23,9 @@ const boardSlice = createSlice({
     },
     resetName(state, action) {
       state.name = "";
+    },
+    setData(state, action) {
+      state.isData = false;
     },
   },
 });
