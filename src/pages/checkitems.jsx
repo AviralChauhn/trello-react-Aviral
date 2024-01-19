@@ -45,13 +45,17 @@ const Checkitem = ({ id, cardId }) => {
     );
   }
 
-  const updateCheckItem = async (id, cardId, state) => {
+  const updateCheckItem = async (checkitemid, cardId, state) => {
     try {
-      const stateUpdate = await updateCheckItemState(cardId, i, state);
+      const stateUpdate = await updateCheckItemState(
+        cardId,
+        checkitemid,
+        state
+      );
       dispatch(
         checkItemActions.updateCheckItem({
           checklistId: id,
-          checkItemId: id,
+          checkItemId: checkitemid,
           stateUpdate,
         })
       );
@@ -85,6 +89,7 @@ const Checkitem = ({ id, cardId }) => {
                 >
                   <Checkbox
                     defaultChecked={item.state === "complete"}
+                    checked={item.state === "complete"}
                     onChange={() => {
                       updateCheckItem(item.id, cardId, item.state);
                     }}

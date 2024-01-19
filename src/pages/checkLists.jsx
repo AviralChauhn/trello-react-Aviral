@@ -91,7 +91,7 @@ const CheckLists = (props) => {
         <Box sx={style}>
           {isError ? (
             <Stack sx={{ width: "100%" }} spacing={2}>
-              <Alert severity="error">Error Fetching Boards!!!!</Alert>
+              <Alert severity="error">Error Fetching checklists!!!!</Alert>
             </Stack>
           ) : (
             checkListData.map((item) => {
